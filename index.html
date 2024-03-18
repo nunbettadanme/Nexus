@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <h2>Login</h2>
+    <label for="accountType">Seleziona il tipo di account:</label>
+    <select id="accountType">
+        <option value="user">Utente</option>
+        <option value="admin">Amministratore</option>
+    </select>
+    <br><br>
+    <form id="loginForm">
+        <label for="code">Inserisci il codice:</label>
+        <input type="password" id="code" name="code">
+        <button type="button" onclick="login()">Accedi</button>
+    </form>
+
+    <script>
+        // Simulazione dei dati degli account
+        var accounts = {
+            "admin": {
+                "password": "adminpassword",
+                "data": {
+                    "username": "admin",
+                    "balance": 1000,
+                    "purchases": []
+                }
+            },
+            "user": {
+                "password": "userpassword",
+                "data": {
+                    "username": "user",
+                    "balance": 500,
+                    "purchases": ["item1", "item2"]
+                }
+            }
+        };
+
+        function login() {
+            var accountType = document.getElementById('accountType').value;
+            var code = document.getElementById('code').value;
+
+            // Verifica delle credenziali
+            if (accountType in accounts && code === accounts[accountType].password) {
+                // Memorizza il tipo di account nell'archiviazione locale per l'accesso futuro
+                localStorage.setItem("accountType", accountType);
+                // Reindirizzamento alla pagina corretta
+                if (accountType === "admin") {
+                    window.location.href = "admin.html";
+                } else if (accountType === "user") {
+                    window.location.href = "user.html";
+                }
+            } else {
+                alert("Credenziali non valide. Riprova.");
+            }
+        }
+    </script>
+</body>
+</html>

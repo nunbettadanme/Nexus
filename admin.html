@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagina Amministratore</title>
+</head>
+<body>
+    <h2>Pagina Amministratore</h2>
+    <div id="adminData"></div>
+
+    <script>
+        // Recupera i dati dell'amministratore dalla localStorage
+        var adminData = accounts["admin"].data;
+
+        // Mostra i dati dell'amministratore
+        document.getElementById('adminData').innerHTML = `
+            <p>Username: ${adminData.username}</p>
+            <p>Saldo: ${adminData.balance.toFixed(2)} XToken</p>
+            <p>Acquisti precedenti: ${adminData.purchases.join(', ')}</p>
+            <button onclick="modifyBalance()">Modifica Saldo</button>
+        `;
+
+        function modifyBalance() {
+            var newBalance = prompt("Inserisci il nuovo saldo:");
+            if (newBalance !== null) {
+                adminData.balance = parseFloat(newBalance);
+                localStorage.setItem("accounts", JSON.stringify(accounts));
+                // Aggiorna la visualizzazione del saldo dopo la modifica
+                document.getElementById('adminData').innerHTML = `
+                    <p>Username: ${adminData.username}</p>
+                    <p>Saldo: ${adminData.balance.toFixed(2)} XToken</p>
+                    <p>Acquisti precedenti: ${adminData.purchases.join(', ')}</p>
+                    <button onclick="modifyBalance()">Modifica Saldo</button>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>
