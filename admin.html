@@ -4,35 +4,80 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pagina Amministratore</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .container p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .container button {
+            font-size: 16px;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        .container button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h2>Pagina Amministratore</h2>
-    <div id="adminData"></div>
+    <div class="container">
+        <h2>Pagina Amministratore</h2>
+        <button onclick="showAccounts()">Visualizza Conti</button>
+        <div id="accountsList" style="display:none;"></div>
+        <button onclick="changeBalance()">Modifica Saldo</button>
+    </div>
 
     <script>
-        // Recupera i dati dell'amministratore dalla localStorage
-        var adminData = accounts["admin"].data;
+        var accounts = JSON.parse(localStorage.getItem("accounts"));
 
-        // Mostra i dati dell'amministratore
-        document.getElementById('adminData').innerHTML = `
-            <p>Username: ${adminData.username}</p>
-            <p>Saldo: ${adminData.balance.toFixed(2)} XToken</p>
-            <p>Acquisti precedenti: ${adminData.purchases.join(', ')}</p>
-            <button onclick="modifyBalance()">Modifica Saldo</button>
-        `;
+        function showAccounts() {
+            var accountsList = document.getElementById('accountsList');
+            accountsList.innerHTML = '';
+            for (var user in accounts) {
+                if (user !== 'admin') {
+                    accountsList.innerHTML += `
+                        <p><strong>Utente:</strong> ${accounts[user].data.username} | <strong>Saldo:</strong> ${accounts[user].data.balance.toFixed(2)} XToken</p>
+                    `;
+                }
+            }
+            accountsList.style.display = 'block';
+        }
 
-        function modifyBalance() {
-            var newBalance = prompt("Inserisci il nuovo saldo:");
-            if (newBalance !== null) {
-                adminData.balance = parseFloat(newBalance);
-                localStorage.setItem("accounts", JSON.stringify(accounts));
-                // Aggiorna la visualizzazione del saldo dopo la modifica
-                document.getElementById('adminData').innerHTML = `
-                    <p>Username: ${adminData.username}</p>
-                    <p>Saldo: ${adminData.balance.toFixed(2)} XToken</p>
-                    <p>Acquisti precedenti: ${adminData.purchases.join(', ')}</p>
-                    <button onclick="modifyBalance()">Modifica Saldo</button>
-                `;
+        function changeBalance() {
+            var username = prompt("Inserisci il nome utente:");
+            if (username) {
+                var amount = prompt("Inserisci l'importo da aggiungere/sottrarre:");
+                if (amount) {
+                    var userAccount = accounts[username];
+                    if (userAccount) {
+                        var newBalance = parseFloat(userAccount.data.balance) + parseFloat(amount);
+                        userAccount.data.balance = newBalance;
+                        localStorage.setItem("accounts", JSON.stringify(accounts));
+                        alert("Saldo modificato con successo!");
+                    } else {
+                        alert("Utente non trovato.");
+                    }
+                }
             }
         }
     </script>
