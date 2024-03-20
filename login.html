@@ -4,23 +4,60 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 300px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        label, select, input, button {
+            margin: 10px 0;
+            font-size: 16px;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        button {
+            cursor: pointer;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
-    <h2>Login</h2>
-    <label for="accountType">Seleziona il tipo di account:</label>
-    <select id="accountType">
-        <option value="user">Utente</option>
-        <option value="admin">Amministratore</option>
-    </select>
-    <br><br>
     <form id="loginForm">
+        <label for="accountType">Seleziona il tipo di account:</label>
+        <select id="accountType">
+            <option value="user">Utente</option>
+            <option value="admin">Amministratore</option>
+        </select>
         <label for="code">Inserisci il codice:</label>
         <input type="password" id="code" name="code">
         <button type="button" onclick="login()">Accedi</button>
     </form>
 
     <script>
-        // Simulazione dei dati degli account
         var accounts = {
             "admin": {
                 "password": "adminpassword",
@@ -34,21 +71,24 @@
                 "password": "userpassword",
                 "data": {
                     "username": "user",
-                    "balance": 500,
-                    "purchases": ["item1", "item2"]
+                    "balance": 80.71,
+                    "purchases": []
                 }
             }
         };
+
+        if (!localStorage.getItem("accounts")) {
+            localStorage.setItem("accounts", JSON.stringify(accounts));
+        }
 
         function login() {
             var accountType = document.getElementById('accountType').value;
             var code = document.getElementById('code').value;
 
-            // Verifica delle credenziali
-            if (accountType in accounts && code === accounts[accountType].password) {
-                // Memorizza il tipo di account nell'archiviazione locale per l'accesso futuro
+            var storedAccounts = JSON.parse(localStorage.getItem("accounts"));
+
+            if (accountType in storedAccounts && code === storedAccounts[accountType].password) {
                 localStorage.setItem("accountType", accountType);
-                // Reindirizzamento alla pagina corretta
                 if (accountType === "admin") {
                     window.location.href = "admin.html";
                 } else if (accountType === "user") {
